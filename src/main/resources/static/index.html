@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><title>Access Policy Audit</title></head>
+<body>
+<h2>Login</h2>
+<input id="userId"><input id="role">
+<button onclick="login()">Login</button>
+<h2>Check Access</h2>
+<input id="action">
+<button onclick="checkAccess()">Check</button>
+<h3 id="result"></h3>
+<script>
+let t=null;
+function login(){
+fetch('/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},
+body:JSON.stringify({userId:userId.value,role:role.value})})
+.then(r=>r.json()).then(d=>{t=d.token;result.innerText='Logged in';});
+}
+function checkAccess(){
+fetch('/api/access/check?action='+action.value,{method:'POST',
+headers:{'Authorization':'Bearer '+t}})
+.then(r=>r.json()).then(d=>{result.innerText=d.allowed?'Access Allowed':'Access Denied';});
+}
+</script>
+</body></html>
